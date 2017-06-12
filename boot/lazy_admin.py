@@ -8,6 +8,18 @@ from django.contrib.admin.sites import (AdminSite, site as default_site,
 from django.shortcuts import redirect
 
 from mezzanine.utils.importing import import_dotted_path
+from django.http import (HttpResponse, HttpResponseServerError, HttpResponseNotFound)
+from json import dumps
+
+
+def displayable_links_js_try(request):
+    """
+    Renders a empty list of ``Displayable`` subclass instances
+    into JSON that's used to populate a list of links in
+    TinyMCE.
+    """
+    links = []
+    return HttpResponse(dumps(links))
 
 
 class LazyAdminSite(AdminSite):
@@ -95,13 +107,13 @@ class LazyAdminSite(AdminSite):
 
         # Misc Mezzanine urlpatterns that should reside under /admin/ url,
         # specifically for compatibility with SSLRedirectMiddleware.
-        from mezzanine.core.views import displayable_links_js, static_proxy
+        from mezzanine.core.views import displayable_links_js, static_proxy        
         from mezzanine.generic.views import admin_keywords_submit
         urls += [
             url("^admin_keywords_submit/$", admin_keywords_submit,
                 name="admin_keywords_submit"),
             url("^asset_proxy/$", static_proxy, name="static_proxy"),
-            url("^displayable_links.js$", displayable_links_js,
+            url("^displayable_links.js$", displayable_links_js_try,
                 name="displayable_links_js"),
         ]
         if "mezzanine.pages" in settings.INSTALLED_APPS:
