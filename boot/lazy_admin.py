@@ -107,7 +107,7 @@ class LazyAdminSite(AdminSite):
 
         # Misc Mezzanine urlpatterns that should reside under /admin/ url,
         # specifically for compatibility with SSLRedirectMiddleware.
-        from mezzanine.core.views import displayable_links_js, static_proxy        
+        from mezzanine.core.views import displayable_links_js, static_proxy
         from mezzanine.generic.views import admin_keywords_submit
         urls += [
             url("^admin_keywords_submit/$", admin_keywords_submit,
