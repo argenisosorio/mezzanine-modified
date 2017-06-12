@@ -187,11 +187,16 @@ def displayable_links_js(request):
     TinyMCE.
     """
     links = []
+    #print "********"
+    #print links
+    #print "********"    
     if "mezzanine.pages" in settings.INSTALLED_APPS:
         from mezzanine.pages.models import Page
         is_page = lambda obj: isinstance(obj, Page)
+        print "***** Paso el primer if"
     else:
         is_page = lambda obj: False
+        print "***** Entro en el primer else"
     # For each item's title, we use its model's verbose_name, but in the
     # case of Page subclasses, we just use "Page", and then sort the items
     # by whether they're a Page subclass or not, then by their URL.
@@ -200,11 +205,24 @@ def displayable_links_js(request):
         real = hasattr(obj, "id")
         page = is_page(obj)
         if real:
+            #print "***** Entro en el segundo if"
             verbose_name = _("Page") if page else obj._meta.verbose_name
             title = "%s: %s" % (verbose_name, title)
         links.append((not page and real, {"title": str(title), "value": url}))
     sorted_links = sorted(links, key=lambda link: (link[0], link[1]['value']))
+    print "***** retorno la lista de enlaces"
     return HttpResponse(dumps([link[1] for link in sorted_links]))
+    #return HttpResponse(dumps(links))
+
+
+def displayable_links_js_try(request):
+    """
+    Renders a list of url/title pairs for all ``Displayable`` subclass
+    instances into JSON that's used to populate a list of links in
+    TinyMCE.
+    """
+    links = []
+    return HttpResponse(dumps(links))
 
 
 @requires_csrf_token
